@@ -1,0 +1,19 @@
+package autonomouscar.mapek.lite.adaptation.resources;
+
+import org.osgi.framework.BundleContext;
+import es.upv.pros.tatami.adaptation.mapek.lite.artifacts.components.Probe;
+
+public class SondaTrafico extends Probe {
+	
+	public static String ID = "Sonda Trafico";
+
+	public SondaTrafico(BundleContext context) {
+		super(context, ID);
+	}
+	
+	
+	public void reportarTrafico(String modo) {
+		this.reportTrafico(modo.toUpperCase());
+	}
+
+}

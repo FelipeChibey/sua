@@ -26,20 +26,32 @@ public class MonitorModoConduccion extends Monitor {
 			IKnowledgeProperty kp_tipo_carretera = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("TipoCarretera");
 
 			if (kp_modo_conduccion.getValue() == "3") {
-				if (kp_modo_conduccion_nivel_autonomo.getValue() == "HighwayChauffer" && value == "JAM") {
+				if (kp_modo_conduccion_nivel_autonomo.getValue() == "HighwayChauffer" && kp_tipo_carretera.getValue() == "HIGHWAY" && value == "JAM") {
 					kp_modo_conduccion_nivel_autonomo.setValue("TrafficJamChauffer");
 				}
-				if (kp_modo_conduccion_nivel_autonomo.getValue() == "TrafficJamChauffer" && value == "FLUID") {
+				if (kp_modo_conduccion_nivel_autonomo.getValue() == "TrafficJamChauffer" && kp_tipo_carretera.getValue() == "HIGHWAY" && value == "FLUID") {
 					kp_modo_conduccion_nivel_autonomo.setValue("HighwayChauffer");
 				}
-
+				if (kp_modo_conduccion_nivel_autonomo.getValue() == "HighwayChauffer" && kp_tipo_carretera.getValue() == "CITY" && value == "FLUID") {
+					kp_modo_conduccion_nivel_autonomo.setValue("CityChauffer");
+				}
+				if (kp_modo_conduccion_nivel_autonomo.getValue() == "TrafficJamChauffer" && kp_tipo_carretera.getValue() == "CITY" && value == "JAM") {
+					kp_modo_conduccion_nivel_autonomo.setValue("CityChauffer");
+				}
+				if (kp_modo_conduccion_nivel_autonomo.getValue() == "CityChauffer" && kp_tipo_carretera.getValue() == "HIGHWAY" && value == "JAM") {
+					kp_modo_conduccion_nivel_autonomo.setValue("TrafficJamChauffer");
+				}
+				if (kp_modo_conduccion_nivel_autonomo.getValue() == "CityChauffer" && kp_tipo_carretera.getValue() == "HIGHWAY" && value == "FLUID") {
+					kp_modo_conduccion_nivel_autonomo.setValue("HighwayChauffer");
+				}
+				
 				if (value == "HIGHWAYCHAUFFER" && kp_tipo_carretera.getValue() == "JAM") {
 					kp_modo_conduccion_nivel_autonomo.setValue("TrafficJamChauffer");
 				}
 				if (value == "TRAFFICJAMCHAUFFER" && kp_tipo_carretera.getValue() == "FLUID") {
 					kp_modo_conduccion_nivel_autonomo.setValue("HighwayChauffer");
 				}
-				
+			
 				
 			}
 			

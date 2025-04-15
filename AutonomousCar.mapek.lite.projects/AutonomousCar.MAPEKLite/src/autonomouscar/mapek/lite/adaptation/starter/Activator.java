@@ -5,10 +5,14 @@ import org.osgi.framework.BundleContext;
 
 import autonomouscar.mapek.lite.adaptation.resources.ModoConduccionTrafficJamChaufferAdaptationRule;
 import autonomouscar.mapek.lite.adaptation.resources.ModoConduccionHighwayChaufferAdaptationRule;
+import autonomouscar.mapek.lite.adaptation.resources.ModoConduccionCityChaufferAdaptationRule;
+import autonomouscar.mapek.lite.adaptation.resources.InteraccionAsientoAdaptationRule;
 import autonomouscar.mapek.lite.adaptation.resources.MonitorModoConduccion;
+import autonomouscar.mapek.lite.adaptation.resources.MonitorInteraccion;
 import autonomouscar.mapek.lite.adaptation.resources.SondaCarretera;
 import autonomouscar.mapek.lite.adaptation.resources.SondaTrafico;
 import autonomouscar.mapek.lite.adaptation.resources.SondaModoConduccion;
+import autonomouscar.mapek.lite.adaptation.resources.SondaAsiento;
 import es.upv.pros.tatami.adaptation.mapek.lite.ARC.artifacts.interfaces.IAdaptiveReadyComponent;
 import es.upv.pros.tatami.adaptation.mapek.lite.ARC.structures.systemconfiguration.interfaces.IComponentsSystemConfiguration;
 import es.upv.pros.tatami.adaptation.mapek.lite.ARC.structures.systemconfiguration.interfaces.IRuleComponentsSystemConfiguration;
@@ -47,35 +51,44 @@ public class Activator implements BundleActivator {
 		
 		BasicMAPEKLiteLoopHelper.startLoopModules();
 
-		
-		
 		BasicMAPEKLiteLoopHelper.addInitialSelfConfigurationCapabilities(createInitialSystemConfiguration());
-		
-		
 		
 		// ADAPTATION PROPERTIES
 		IKnowledgeProperty kp_Modo = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("ModoConduccion");
 		IKnowledgeProperty kp_ModoConduccionNivelAutonomo = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("ModoConduccionNivelAutonomo");
 		IKnowledgeProperty kp_TipoCarretera = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("TipoCarretera");
+		
+		IKnowledgeProperty kp_EstadoAsiento = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("EstadoAsiento");
+		IKnowledgeProperty kp_SensorAsiento = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("SensorAsiento");
+		
 		kp_ModoConduccionNivelAutonomo.setValue("TrafficJamChauffer");
 		kp_Modo.setValue("3");
 		kp_TipoCarretera.setValue("CITY");
+
 		// ADAPTATION RULES
  		IAdaptiveReadyComponent theIluminacionConfortAdaptationRuleARC = BasicMAPEKLiteLoopHelper.deployAdaptationRule(new ModoConduccionTrafficJamChaufferAdaptationRule(bundleContext));
  		IAdaptiveReadyComponent highwayAdaptationRuleARC = BasicMAPEKLiteLoopHelper.deployAdaptationRule(new ModoConduccionHighwayChaufferAdaptationRule(bundleContext));
+ 		IAdaptiveReadyComponent cityAdaptationRuleARC = BasicMAPEKLiteLoopHelper.deployAdaptationRule(new ModoConduccionCityChaufferAdaptationRule(bundleContext));
+ 		IAdaptiveReadyComponent asientoAdaptationRuleARC = BasicMAPEKLiteLoopHelper.deployAdaptationRule(new InteraccionAsientoAdaptationRule(bundleContext));
  		
 		// MONITORS
-		IAdaptiveReadyComponent theModoMonitorARC = BasicMAPEKLiteLoopHelper.deployMonitor(new MonitorModoConduccion(bundleContext));		
+		IAdaptiveReadyComponent theModoMonitorARC = BasicMAPEKLiteLoopHelper.deployMonitor(new MonitorModoConduccion(bundleContext));
+		IAdaptiveReadyComponent theInteraccionARC = BasicMAPEKLiteLoopHelper.deployMonitor(new MonitorInteraccion(bundleContext));
 
 		// PROBES
 		SondaCarretera sc = new SondaCarretera(bundleContext);
 		SondaTrafico st = new SondaTrafico(bundleContext);
+		SondaModoConduccion smc = new SondaModoConduccion(bundleContext);
 		
 		IAdaptiveReadyComponent theModoProbeARC = BasicMAPEKLiteLoopHelper.deployProbe(st, theModoMonitorARC);
 		IAdaptiveReadyComponent theModoProbeARC2 = BasicMAPEKLiteLoopHelper.deployProbe(sc, theModoMonitorARC);
+		IAdaptiveReadyComponent theModoProbeARC3 = BasicMAPEKLiteLoopHelper.deployProbe(smc, theModoMonitorARC);
 		st.reportarTrafico("FLUID");
 		sc.reportarCarretera("HIGHWAY");
 		
+		SondaAsiento sa = new SondaAsiento(bundleContext);
+		IAdaptiveReadyComponent theInteraccionARC3 = BasicMAPEKLiteLoopHelper.deployProbe(sa, theInteraccionARC);
+		sa.reportarInteraccion("True");
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {

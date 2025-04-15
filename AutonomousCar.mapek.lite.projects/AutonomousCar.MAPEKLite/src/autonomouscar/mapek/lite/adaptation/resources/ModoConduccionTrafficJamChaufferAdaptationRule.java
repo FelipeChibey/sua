@@ -19,7 +19,7 @@ public class ModoConduccionTrafficJamChaufferAdaptationRule extends AdaptationRu
 	
 	IKnowledgeProperty kp_modo_conduccion = null;
 	IKnowledgeProperty kp_modo_conduccion_nivel_autonomo = null;
-
+	IKnowledgeProperty kp_tipo_carretera = null;
 	
 	public ModoConduccionTrafficJamChaufferAdaptationRule(BundleContext context) {
 		super(context, ID);
@@ -28,7 +28,7 @@ public class ModoConduccionTrafficJamChaufferAdaptationRule extends AdaptationRu
 
 		kp_modo_conduccion = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccion");
 		kp_modo_conduccion_nivel_autonomo = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccionNivelAutonomo");
-		kp_modo_conduccion_nivel_autonomo = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("TipoCarretera");
+		kp_tipo_carretera = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("TipoCarretera");
 
 	}
 
@@ -79,6 +79,8 @@ public class ModoConduccionTrafficJamChaufferAdaptationRule extends AdaptationRu
 
 		// Agregamos el controlador de trafico
 		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "driving.L3.TrafficJamChauffer", "1.0.0");
+		SystemConfigurationHelper.componentToRemove(theNextSystemConfiguration, "driving.L3.HighwayChauffer", "1.0.0");
+		SystemConfigurationHelper.componentToRemove(theNextSystemConfiguration, "driving.L3.CityChauffer", "1.0.0");
 
 		return theNextSystemConfiguration;		
 		

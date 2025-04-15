@@ -78,6 +78,8 @@ public class ModoConduccionHighwayChaufferAdaptationRule extends AdaptationRule 
 
 		// Agregamos el controlador de trafico
 		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "driving.L3.HighwayChauffer", "1.0.0");
+		SystemConfigurationHelper.componentToRemove(theNextSystemConfiguration, "driving.L3.CityChauffer", "1.0.0");
+		SystemConfigurationHelper.componentToRemove(theNextSystemConfiguration, "driving.L3.TrafficJamChauffer", "1.0.0");
 
 		return theNextSystemConfiguration;		
 		

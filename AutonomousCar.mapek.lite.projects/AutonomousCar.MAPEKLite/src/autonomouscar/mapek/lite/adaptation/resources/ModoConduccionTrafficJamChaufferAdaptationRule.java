@@ -15,7 +15,7 @@ import es.upv.pros.tatami.osgi.utils.logger.SmartLogger;
 public class ModoConduccionTrafficJamChaufferAdaptationRule extends AdaptationRule {
 	
 	protected static SmartLogger logger = SmartLogger.getLogger(ModoConduccionTrafficJamChaufferAdaptationRule.class);
-	public static String ID = "Regla Modo conducción";
+	public static String ID = "Regla Modo Conduccion TrafficJamChauffer";
 	
 	IKnowledgeProperty kp_modo_conduccion = null;
 	IKnowledgeProperty kp_modo_conduccion_nivel_autonomo = null;
@@ -28,6 +28,7 @@ public class ModoConduccionTrafficJamChaufferAdaptationRule extends AdaptationRu
 
 		kp_modo_conduccion = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccion");
 		kp_modo_conduccion_nivel_autonomo = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccionNivelAutonomo");
+		kp_modo_conduccion_nivel_autonomo = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("TipoCarretera");
 
 	}
 
@@ -61,7 +62,7 @@ public class ModoConduccionTrafficJamChaufferAdaptationRule extends AdaptationRu
 			throw new RuleException("ModoAuto NULL!", "Not executing the rule ...");
 		}
 
-		if ( modoConduccion.equals("3") && modoConduccionAutonomo.equals("TRAFFICJAMCHAUFFER") ) {
+		if ( modoConduccion.equals("3") && modoConduccionAutonomo.equals("TrafficJamChauffer") ) {
 			
 			return this.configuracionSistemaActivarControlTrafficJamChauffer();
 						

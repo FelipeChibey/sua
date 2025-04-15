@@ -4,9 +4,11 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import autonomouscar.mapek.lite.adaptation.resources.ModoConduccionTrafficJamChaufferAdaptationRule;
-import autonomouscar.mapek.lite.adaptation.resources.MonitorCarretera;
+import autonomouscar.mapek.lite.adaptation.resources.ModoConduccionHighwayChaufferAdaptationRule;
+import autonomouscar.mapek.lite.adaptation.resources.MonitorModoConduccion;
 import autonomouscar.mapek.lite.adaptation.resources.SondaCarretera;
 import autonomouscar.mapek.lite.adaptation.resources.SondaTrafico;
+import autonomouscar.mapek.lite.adaptation.resources.SondaModoConduccion;
 import es.upv.pros.tatami.adaptation.mapek.lite.ARC.artifacts.interfaces.IAdaptiveReadyComponent;
 import es.upv.pros.tatami.adaptation.mapek.lite.ARC.structures.systemconfiguration.interfaces.IComponentsSystemConfiguration;
 import es.upv.pros.tatami.adaptation.mapek.lite.ARC.structures.systemconfiguration.interfaces.IRuleComponentsSystemConfiguration;
@@ -54,20 +56,25 @@ public class Activator implements BundleActivator {
 		// ADAPTATION PROPERTIES
 		IKnowledgeProperty kp_Modo = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("ModoConduccion");
 		IKnowledgeProperty kp_ModoConduccionNivelAutonomo = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("ModoConduccionNivelAutonomo");
-
+		IKnowledgeProperty kp_TipoCarretera = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("TipoCarretera");
+		kp_ModoConduccionNivelAutonomo.setValue("TrafficJamChauffer");
+		kp_Modo.setValue("3");
+		kp_TipoCarretera.setValue("CITY");
 		// ADAPTATION RULES
- 		IAdaptiveReadyComponent theIluminacionConfortAdaptationRuleARC = BasicMAPEKLiteLoopHelper.deployAdaptationRule(new ModoConduccionTrafficJamChaufferAdaptationRule(bundleContext));		
+ 		IAdaptiveReadyComponent theIluminacionConfortAdaptationRuleARC = BasicMAPEKLiteLoopHelper.deployAdaptationRule(new ModoConduccionTrafficJamChaufferAdaptationRule(bundleContext));
+ 		IAdaptiveReadyComponent highwayAdaptationRuleARC = BasicMAPEKLiteLoopHelper.deployAdaptationRule(new ModoConduccionHighwayChaufferAdaptationRule(bundleContext));
  		
 		// MONITORS
-		IAdaptiveReadyComponent theModoMonitorARC = BasicMAPEKLiteLoopHelper.deployMonitor(new MonitorCarretera(bundleContext));		
+		IAdaptiveReadyComponent theModoMonitorARC = BasicMAPEKLiteLoopHelper.deployMonitor(new MonitorModoConduccion(bundleContext));		
 
 		// PROBES
 		SondaCarretera sc = new SondaCarretera(bundleContext);
-		IAdaptiveReadyComponent theModoProbeARC = BasicMAPEKLiteLoopHelper.deployProbe(sc, theModoMonitorARC);
-		sc.reportarCarretera("HIGHWAY");
-		
 		SondaTrafico st = new SondaTrafico(bundleContext);
-		sc.reportarCarretera("FLUID");
+		
+		IAdaptiveReadyComponent theModoProbeARC = BasicMAPEKLiteLoopHelper.deployProbe(st, theModoMonitorARC);
+		IAdaptiveReadyComponent theModoProbeARC2 = BasicMAPEKLiteLoopHelper.deployProbe(sc, theModoMonitorARC);
+		st.reportarTrafico("FLUID");
+		sc.reportarCarretera("HIGHWAY");
 		
 	}
 

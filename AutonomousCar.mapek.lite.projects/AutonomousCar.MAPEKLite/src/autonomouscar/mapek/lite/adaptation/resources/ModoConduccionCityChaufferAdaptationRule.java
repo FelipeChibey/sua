@@ -70,7 +70,7 @@ public class ModoConduccionCityChaufferAdaptationRule extends AdaptationRule {
 			throw new RuleException("Unknown property value",
 					"Cannot understand knowledge property value. Not executing the rule ...");
 		}
-	}
+	}	
 	
 	protected IRuleComponentsSystemConfiguration configuracionSistemaActivarControlTrafficJamChauffer() {
 		// Activamos el controlador de trafico

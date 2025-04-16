@@ -83,12 +83,12 @@ public class Activator implements BundleActivator {
 		IAdaptiveReadyComponent theModoProbeARC = BasicMAPEKLiteLoopHelper.deployProbe(st, theModoMonitorARC);
 		IAdaptiveReadyComponent theModoProbeARC2 = BasicMAPEKLiteLoopHelper.deployProbe(sc, theModoMonitorARC);
 		IAdaptiveReadyComponent theModoProbeARC3 = BasicMAPEKLiteLoopHelper.deployProbe(smc, theModoMonitorARC);
-		st.reportarTrafico("FLUID");
-		sc.reportarCarretera("HIGHWAY");
+//		st.reportarTrafico("FLUID");
+//		sc.reportarCarretera("HIGHWAY");
 		
 		SondaAsiento sa = new SondaAsiento(bundleContext);
 		IAdaptiveReadyComponent theInteraccionARC3 = BasicMAPEKLiteLoopHelper.deployProbe(sa, theInteraccionARC);
-		sa.reportarInteraccion("True");
+//		sa.reportarInteraccion("True");
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {

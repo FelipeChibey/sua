@@ -51,10 +51,8 @@ public class MonitorModoConduccion extends Monitor {
 				if (value == "TRAFFICJAMCHAUFFER" && kp_tipo_carretera.getValue() == "FLUID") {
 					kp_modo_conduccion_nivel_autonomo.setValue("HighwayChauffer");
 				}
-			
-				
 			}
-			
+
 			//if ( kp_modo_conduccion.getValue() == null || kp_modo_conduccion.getValue() != value ) { // sólo actualizamos si el valor es diferente
 			//	this.logger.debug(String.format("Updating Knowledge Property %s TO %s", kp_modo_conduccion.getId(), value));
 			//	kp_modo_conduccion.setValue(value);

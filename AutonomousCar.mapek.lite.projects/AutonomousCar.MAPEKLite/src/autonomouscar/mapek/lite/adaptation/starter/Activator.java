@@ -57,13 +57,11 @@ public class Activator implements BundleActivator {
 		IKnowledgeProperty kp_Modo = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("ModoConduccion");
 		IKnowledgeProperty kp_ModoConduccionNivelAutonomo = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("ModoConduccionNivelAutonomo");
 		IKnowledgeProperty kp_TipoCarretera = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("TipoCarretera");
+		IKnowledgeProperty kp_EstadoCarretera = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("EstadoCarretera");
 		
 		IKnowledgeProperty kp_EstadoAsiento = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("EstadoAsiento");
 		IKnowledgeProperty kp_SensorAsiento = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("SensorAsiento");
-		
-		kp_ModoConduccionNivelAutonomo.setValue("TrafficJamChauffer");
-		kp_Modo.setValue("3");
-		kp_TipoCarretera.setValue("CITY");
+
 
 		// ADAPTATION RULES
  		IAdaptiveReadyComponent theIluminacionConfortAdaptationRuleARC = BasicMAPEKLiteLoopHelper.deployAdaptationRule(new ModoConduccionTrafficJamChaufferAdaptationRule(bundleContext));
@@ -83,12 +81,9 @@ public class Activator implements BundleActivator {
 		IAdaptiveReadyComponent theModoProbeARC = BasicMAPEKLiteLoopHelper.deployProbe(st, theModoMonitorARC);
 		IAdaptiveReadyComponent theModoProbeARC2 = BasicMAPEKLiteLoopHelper.deployProbe(sc, theModoMonitorARC);
 		IAdaptiveReadyComponent theModoProbeARC3 = BasicMAPEKLiteLoopHelper.deployProbe(smc, theModoMonitorARC);
-//		st.reportarTrafico("FLUID");
-//		sc.reportarCarretera("HIGHWAY");
 		
 		SondaAsiento sa = new SondaAsiento(bundleContext);
 		IAdaptiveReadyComponent theInteraccionARC3 = BasicMAPEKLiteLoopHelper.deployProbe(sa, theInteraccionARC);
-//		sa.reportarInteraccion("True");
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {

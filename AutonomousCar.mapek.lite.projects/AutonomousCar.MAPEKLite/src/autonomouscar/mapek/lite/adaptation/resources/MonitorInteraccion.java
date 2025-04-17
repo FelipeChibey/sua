@@ -21,17 +21,9 @@ public class MonitorInteraccion extends Monitor {
 		try {
 			String value = (String) measure;
 
-			IKnowledgeProperty kp_modo_conduccion = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccion");
 			IKnowledgeProperty kp_estado_asiento= BasicMAPEKLiteLoopHelper.getKnowledgeProperty("EstadoAsiento");
-			
-			if (kp_modo_conduccion.getValue() == "3") {
-				if (value != null)  kp_estado_asiento.setValue(value);
-			}
-			
-			//if ( kp_modo_conduccion.getValue() == null || kp_modo_conduccion.getValue() != value ) { // sólo actualizamos si el valor es diferente
-			//	this.logger.debug(String.format("Updating Knowledge Property %s TO %s", kp_modo_conduccion.getId(), value));
-			//	kp_modo_conduccion.setValue(value);
-			//}
+
+			if (value != null)  kp_estado_asiento.setValue(value);
 
 		} catch (Exception e) {
 			return this;

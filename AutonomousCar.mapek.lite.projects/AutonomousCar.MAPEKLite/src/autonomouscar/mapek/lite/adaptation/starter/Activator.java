@@ -7,11 +7,11 @@ import autonomouscar.mapek.lite.adaptation.resources.ModoConduccionTrafficJamCha
 import autonomouscar.mapek.lite.adaptation.resources.ModoConduccionHighwayChaufferAdaptationRule;
 import autonomouscar.mapek.lite.adaptation.resources.ModoConduccionCityChaufferAdaptationRule;
 import autonomouscar.mapek.lite.adaptation.resources.InteraccionAsientoAdaptationRule;
-import autonomouscar.mapek.lite.adaptation.resources.MonitorModoConduccion;
+import autonomouscar.mapek.lite.adaptation.resources.MonitorTipoCarretera;
+import autonomouscar.mapek.lite.adaptation.resources.MonitorEstadoCarretera;
 import autonomouscar.mapek.lite.adaptation.resources.MonitorInteraccion;
 import autonomouscar.mapek.lite.adaptation.resources.SondaCarretera;
 import autonomouscar.mapek.lite.adaptation.resources.SondaTrafico;
-import autonomouscar.mapek.lite.adaptation.resources.SondaModoConduccion;
 import autonomouscar.mapek.lite.adaptation.resources.SondaAsiento;
 import es.upv.pros.tatami.adaptation.mapek.lite.ARC.artifacts.interfaces.IAdaptiveReadyComponent;
 import es.upv.pros.tatami.adaptation.mapek.lite.ARC.structures.systemconfiguration.interfaces.IComponentsSystemConfiguration;
@@ -24,6 +24,8 @@ import sua.autonomouscar.infraestructure.devices.ARC.EngineARC;
 import sua.autonomouscar.infraestructure.devices.ARC.SteeringARC;
 import sua.autonomouscar.infraestructure.driving.ARC.FallbackPlanARC;
 import sua.autonomouscar.infraestructure.driving.ARC.L3_DrivingServiceARC;
+import sua.autonomouscar.infraestructure.devices.ARC.HumanSensorsARC;
+import sua.autonomouscar.infraestructure.devices.ARC.SeatSensorARC;
 
 public class Activator implements BundleActivator {
 
@@ -60,8 +62,8 @@ public class Activator implements BundleActivator {
 		IKnowledgeProperty kp_EstadoCarretera = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("EstadoCarretera");
 		
 		IKnowledgeProperty kp_EstadoAsiento = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("EstadoAsiento");
-		IKnowledgeProperty kp_SensorAsiento = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("SensorAsiento");
-
+		
+		kp_Modo.setValue("3");
 
 		// ADAPTATION RULES
  		IAdaptiveReadyComponent theIluminacionConfortAdaptationRuleARC = BasicMAPEKLiteLoopHelper.deployAdaptationRule(new ModoConduccionTrafficJamChaufferAdaptationRule(bundleContext));
@@ -70,20 +72,20 @@ public class Activator implements BundleActivator {
  		IAdaptiveReadyComponent asientoAdaptationRuleARC = BasicMAPEKLiteLoopHelper.deployAdaptationRule(new InteraccionAsientoAdaptationRule(bundleContext));
  		
 		// MONITORS
-		IAdaptiveReadyComponent theModoMonitorARC = BasicMAPEKLiteLoopHelper.deployMonitor(new MonitorModoConduccion(bundleContext));
+		IAdaptiveReadyComponent theModoMonitorARC = BasicMAPEKLiteLoopHelper.deployMonitor(new MonitorTipoCarretera(bundleContext));
+		IAdaptiveReadyComponent theTraficoMonitorARC = BasicMAPEKLiteLoopHelper.deployMonitor(new MonitorEstadoCarretera(bundleContext));
 		IAdaptiveReadyComponent theInteraccionARC = BasicMAPEKLiteLoopHelper.deployMonitor(new MonitorInteraccion(bundleContext));
 
 		// PROBES
 		SondaCarretera sc = new SondaCarretera(bundleContext);
 		SondaTrafico st = new SondaTrafico(bundleContext);
-		SondaModoConduccion smc = new SondaModoConduccion(bundleContext);
 		
-		IAdaptiveReadyComponent theModoProbeARC = BasicMAPEKLiteLoopHelper.deployProbe(st, theModoMonitorARC);
+		IAdaptiveReadyComponent theModoProbeARC = BasicMAPEKLiteLoopHelper.deployProbe(st, theTraficoMonitorARC);
 		IAdaptiveReadyComponent theModoProbeARC2 = BasicMAPEKLiteLoopHelper.deployProbe(sc, theModoMonitorARC);
-		IAdaptiveReadyComponent theModoProbeARC3 = BasicMAPEKLiteLoopHelper.deployProbe(smc, theModoMonitorARC);
 		
 		SondaAsiento sa = new SondaAsiento(bundleContext);
 		IAdaptiveReadyComponent theInteraccionARC3 = BasicMAPEKLiteLoopHelper.deployProbe(sa, theInteraccionARC);
+		kp_EstadoAsiento.setValue(true);
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
@@ -104,14 +106,19 @@ public class Activator implements BundleActivator {
 		
 		// Ejemplo 1: Añadimos los componentes "device.RoadSensor" y "device.Engine", y eliminamos el componente "device.Steering" ...
 		SystemConfigurationHelper.componentToAdd(theInitialSystemConfiguration, "device.RoadSensor", "1.0.0");
+		SystemConfigurationHelper.componentToAdd(theInitialSystemConfiguration, "device.HumanSensor", "1.0.0");
 		SystemConfigurationHelper.componentToAdd(theInitialSystemConfiguration, "device.Engine", "1.0.0");
-		SystemConfigurationHelper.componentToRemove(theInitialSystemConfiguration, "device.Steering", "1.0.0");
+		SystemConfigurationHelper.componentToAdd(theInitialSystemConfiguration, "device.Steering", "1.0.0");
 		
 		// Ejemplo 2: ... y añadimos el servicio "driving.FallbackPlan.Emergency", que representa al fallback plan de emergencia
 		SystemConfigurationHelper.componentToAdd(theInitialSystemConfiguration, "driving.FallbackPlan.Emergency", "1.0.0");
 		
 		
+		SystemConfigurationHelper.bindingToAdd(theInitialSystemConfiguration, 
+				"device.HumanSensor", "1.0.0", HumanSensorsARC.REQUIRED_DRIVERSEATSENSOR,
+				"device.SeatSensor", "1.0.0", SeatSensorARC.PROVIDED_SENSOR);
 		
+		SystemConfigurationHelper.componentToAdd(theInitialSystemConfiguration, "interaction.NotificationService", "1.0.0");
 		//
 		// ... adding and removing binding examples ...
 		// SystemConfigurationHelper.bindingToAdd or SystemConfigurationHelper.bindingToRemove
@@ -135,7 +142,6 @@ public class Activator implements BundleActivator {
 				"driving.FallbackPlan.Emergency", "1.0.0", FallbackPlanARC.REQUIRED_STEERING,
 				"device.Steering", "1.0.0", SteeringARC.PROVIDED_DEVICE);
 
-		
 		//
 		// ... setting parameters examples ...
 		// SystemConfigurationHelper.setParameter

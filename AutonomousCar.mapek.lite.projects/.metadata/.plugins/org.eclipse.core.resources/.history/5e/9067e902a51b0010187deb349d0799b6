@@ -1,0 +1,69 @@
+package autonomouscar.mapek.lite.adaptation.resources;
+
+import org.osgi.framework.BundleContext;
+
+import es.upv.pros.tatami.adaptation.mapek.lite.artifacts.components.Monitor;
+import es.upv.pros.tatami.adaptation.mapek.lite.artifacts.interfaces.IKnowledgeProperty;
+import es.upv.pros.tatami.adaptation.mapek.lite.artifacts.interfaces.IMonitor;
+import es.upv.pros.tatami.adaptation.mapek.lite.helpers.BasicMAPEKLiteLoopHelper;
+
+public class MonitorEstadoCarretera extends Monitor {
+	
+	public static String ID = "Monitor Estado Carretera";
+
+	public MonitorEstadoCarretera(BundleContext context) {
+		super(context, ID);
+	}
+
+	@Override
+	public IMonitor report(Object measure) {
+		this.logger.debug(String.format("Received measure: %s", measure.toString()));
+		try {
+			String value = (String) measure;
+
+			IKnowledgeProperty kp_modo_conduccion = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccion");
+			IKnowledgeProperty kp_modo_conduccion_nivel_autonomo = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccionNivelAutonomo");
+			IKnowledgeProperty kp_tipo_carretera = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("TipoCarretera");
+			IKnowledgeProperty kp_estado_carretera = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("EstadoCarretera");
+
+			if (kp_modo_conduccion.getValue() == "3") {
+				if (kp_modo_conduccion_nivel_autonomo.getValue() == "HighwayChauffer" && kp_tipo_carretera.getValue() == "HIGHWAY" && value == "JAM") {
+					kp_modo_conduccion_nivel_autonomo.setValue("TrafficJamChauffer");
+				}
+				if (kp_modo_conduccion_nivel_autonomo.getValue() == "TrafficJamChauffer" && kp_tipo_carretera.getValue() == "HIGHWAY" && value == "FLUID") {
+					kp_modo_conduccion_nivel_autonomo.setValue("HighwayChauffer");
+				}
+				if (kp_modo_conduccion_nivel_autonomo.getValue() == "HighwayChauffer" && kp_tipo_carretera.getValue() == "CITY" && value == "FLUID") {
+					kp_modo_conduccion_nivel_autonomo.setValue("CityChauffer");
+				}
+				if (kp_modo_conduccion_nivel_autonomo.getValue() == "TrafficJamChauffer" && kp_tipo_carretera.getValue() == "CITY" && value == "JAM") {
+					kp_modo_conduccion_nivel_autonomo.setValue("CityChauffer");
+				}
+				if (kp_modo_conduccion_nivel_autonomo.getValue() == "CityChauffer" && kp_tipo_carretera.getValue() == "HIGHWAY" && value == "JAM") {
+					kp_modo_conduccion_nivel_autonomo.setValue("TrafficJamChauffer");
+				}
+				if (kp_modo_conduccion_nivel_autonomo.getValue() == "CityChauffer" && kp_tipo_carretera.getValue() == "HIGHWAY" && value == "FLUID") {
+					kp_modo_conduccion_nivel_autonomo.setValue("HighwayChauffer");
+				}
+				
+				if (value == "HIGHWAYCHAUFFER" && kp_tipo_carretera.getValue() == "JAM") {
+					kp_modo_conduccion_nivel_autonomo.setValue("TrafficJamChauffer");
+				}
+				if (value == "TRAFFICJAMCHAUFFER" && kp_tipo_carretera.getValue() == "FLUID") {
+					kp_modo_conduccion_nivel_autonomo.setValue("HighwayChauffer");
+				}
+			}
+
+			//if ( kp_modo_conduccion.getValue() == null || kp_modo_conduccion.getValue() != value ) { // sólo actualizamos si el valor es diferente
+			//	this.logger.debug(String.format("Updating Knowledge Property %s TO %s", kp_modo_conduccion.getId(), value));
+			//	kp_modo_conduccion.setValue(value);
+			//}
+
+		} catch (Exception e) {
+			return this;
+		}
+		
+		return this;
+	}
+
+}

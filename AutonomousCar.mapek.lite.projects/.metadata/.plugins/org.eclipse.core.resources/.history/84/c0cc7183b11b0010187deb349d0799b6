@@ -1,0 +1,119 @@
+package autonomouscar.mapek.lite.adaptation.resources;
+
+import org.osgi.framework.BundleContext;
+
+import es.upv.pros.tatami.adaptation.mapek.lite.ARC.structures.systemconfiguration.interfaces.IRuleComponentsSystemConfiguration;
+import es.upv.pros.tatami.adaptation.mapek.lite.artifacts.components.AdaptationRule;
+import es.upv.pros.tatami.adaptation.mapek.lite.artifacts.interfaces.IKnowledgeProperty;
+import es.upv.pros.tatami.adaptation.mapek.lite.exceptions.analyzing.RuleException;
+import es.upv.pros.tatami.adaptation.mapek.lite.helpers.BasicMAPEKLiteLoopHelper;
+import es.upv.pros.tatami.adaptation.mapek.lite.helpers.SystemConfigurationHelper;
+import es.upv.pros.tatami.adaptation.mapek.lite.structures.systemconfiguration.interfaces.IRuleSystemConfiguration;
+import es.upv.pros.tatami.osgi.utils.interfaces.ITimeStamped;
+import es.upv.pros.tatami.osgi.utils.logger.SmartLogger;
+
+public class ModoConduccionCityChaufferAdaptationRule extends AdaptationRule {
+	
+	protected static SmartLogger logger = SmartLogger.getLogger(ModoConduccionCityChaufferAdaptationRule.class);
+	public static String ID = "Regla Modo Conduccion CityChauffer";
+	
+	IKnowledgeProperty kp_modo_conduccion = null;
+	IKnowledgeProperty kp_modo_conduccion_nivel_autonomo = null;
+	IKnowledgeProperty kp_tipo_carretera = null;
+	IKnowledgeProperty kp_estado_carretera = null;
+	
+	public ModoConduccionCityChaufferAdaptationRule(BundleContext context) {
+		super(context, ID);
+		this.setListenToKnowledgePropertyChanges("ModoConduccion");
+		this.setListenToKnowledgePropertyChanges("ModoConduccionNivelAutonomo");
+
+		kp_modo_conduccion = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccion");
+		kp_modo_conduccion_nivel_autonomo = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccionNivelAutonomo");
+		kp_tipo_carretera = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("TipoCarretera");
+		kp_estado_carretera = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("EstadoCarretera");
+	}
+
+	@Override
+	public boolean checkAffectedByChange(IKnowledgeProperty property) {
+		
+		if (kp_modo_conduccion == null || kp_modo_conduccion_nivel_autonomo == null) {
+			logger.trace("Required Knowledge property not set. Not executing the rule ...");
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public IRuleSystemConfiguration onExecute(IKnowledgeProperty property) throws RuleException {
+		
+		String modoConduccion = null;
+		String modoEstadoCarretera = null;
+		String modoTipoCarretera = null;
+		String modoConduccionAutonomo = null;
+		
+		if ( kp_modo_conduccion.getValue() != null ) {
+			
+			modoConduccion = (String) kp_modo_conduccion.getValue();
+		} else {
+			logger.trace("FranjaDia NULL! Not executing the rule ...");
+			throw new RuleException("FranjaDia null value!", "Not executing the rule ...");		
+		}
+		
+		if ( kp_estado_carretera.getValue() != null ) {
+			
+			modoEstadoCarretera = (String) kp_estado_carretera.getValue();
+		} else {
+			logger.trace("asdfasdf NULL! Not executing the rule ...");
+			throw new RuleException("FranjaDia null value!", "Not executing the rule ...");		
+		}
+		
+		if ( kp_tipo_carretera.getValue() != null ) {
+			
+			modoTipoCarretera = (String) kp_tipo_carretera.getValue();
+		} else {
+			logger.trace("asdfasdf NULL! Not executing the rule ...");
+			throw new RuleException("FranjaDia null value!", "Not executing the rule ...");		
+		}
+		
+		
+		if ( kp_modo_conduccion_nivel_autonomo.getValue() != null ) {
+			modoConduccionAutonomo = (String) kp_modo_conduccion_nivel_autonomo.getValue();
+		} else {
+			logger.trace("ModoAuto NULL! Not executing the rule ...");
+			throw new RuleException("ModoAuto NULL!", "Not executing the rule ...");
+		}
+
+		if ( modoConduccion.equals("3") && modoTipoCarretera.equals("CITY")) {
+			return this.configuracionSistemaActivarControlCityChauffer();
+		} else if (!modoTipoCarretera.equals("CITY") || !modoConduccion.equals("3")) {
+			return this.configuracionSistemaDesactivarControlCityChauffer();	
+		} else {
+			logger.trace("Cannot understand knowledge property value. Not executing the rule ...");
+			throw new RuleException("Unknown property value",
+					"Cannot understand knowledge property value. Not executing the rule ...");
+		}
+	}	
+	
+	protected IRuleComponentsSystemConfiguration configuracionSistemaActivarControlCityChauffer() {
+		// Activamos el controlador de trafico
+		IRuleComponentsSystemConfiguration theNextSystemConfiguration = SystemConfigurationHelper.createPartialSystemConfiguration(this.getId() + "_" + ITimeStamped.getCurrentTimeStamp());
+
+		// Agregamos el controlador de trafico
+		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "driving.L3.CityChauffer", "1.0.0");
+		
+		return theNextSystemConfiguration;		
+		
+	}
+	
+	protected IRuleComponentsSystemConfiguration configuracionSistemaDesactivarControlCityChauffer() {
+		// Activamos el controlador de trafico
+		IRuleComponentsSystemConfiguration theNextSystemConfiguration = SystemConfigurationHelper.createPartialSystemConfiguration(this.getId() + "_" + ITimeStamped.getCurrentTimeStamp());
+
+		// Agregamos el controlador de trafico
+		SystemConfigurationHelper.componentToRemove(theNextSystemConfiguration, "driving.L3.CityChauffer", "1.0.0");
+		
+		return theNextSystemConfiguration;		
+		
+	}
+	
+}

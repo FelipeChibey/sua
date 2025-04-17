@@ -11,6 +11,12 @@ import es.upv.pros.tatami.adaptation.mapek.lite.helpers.SystemConfigurationHelpe
 import es.upv.pros.tatami.adaptation.mapek.lite.structures.systemconfiguration.interfaces.IRuleSystemConfiguration;
 import es.upv.pros.tatami.osgi.utils.interfaces.ITimeStamped;
 import es.upv.pros.tatami.osgi.utils.logger.SmartLogger;
+import sua.autonomouscar.infraestructure.devices.ARC.EngineARC;
+import sua.autonomouscar.infraestructure.devices.ARC.HumanSensorsARC;
+import sua.autonomouscar.infraestructure.devices.ARC.RoadSensorARC;
+import sua.autonomouscar.infraestructure.devices.ARC.SteeringARC;
+import sua.autonomouscar.infraestructure.driving.ARC.L3_DrivingServiceARC;
+import sua.autonomouscar.infraestructure.interaction.ARC.NotificationServiceARC;
 
 public class ModoConduccionHighwayChaufferAdaptationRule extends AdaptationRule {
 	
@@ -20,15 +26,17 @@ public class ModoConduccionHighwayChaufferAdaptationRule extends AdaptationRule 
 	IKnowledgeProperty kp_modo_conduccion = null;
 	IKnowledgeProperty kp_modo_conduccion_nivel_autonomo = null;
 	IKnowledgeProperty kp_tipo_carretera = null;
+	IKnowledgeProperty kp_estado_carretera = null;
 
 	public ModoConduccionHighwayChaufferAdaptationRule(BundleContext context) {
 		super(context, ID);
-		this.setListenToKnowledgePropertyChanges("ModoConduccion");
-		this.setListenToKnowledgePropertyChanges("ModoConduccionNivelAutonomo");
+		this.setListenToKnowledgePropertyChanges("TipoCarretera");
+		this.setListenToKnowledgePropertyChanges("EstadoCarretera");
 
 		kp_modo_conduccion = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccion");
 		kp_modo_conduccion_nivel_autonomo = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccionNivelAutonomo");
 		kp_tipo_carretera = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("TipoCarretera");
+		kp_estado_carretera = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("EstadoCarretera");
 	}
 
 	@Override
@@ -45,6 +53,9 @@ public class ModoConduccionHighwayChaufferAdaptationRule extends AdaptationRule 
 	public IRuleSystemConfiguration onExecute(IKnowledgeProperty property) throws RuleException {
 		
 		String modoConduccion = null;
+		String modoEstadoCarretera = null;
+		String modoTipoCarretera = null;
+		
 		if ( kp_modo_conduccion.getValue() != null ) {
 			
 			modoConduccion = (String) kp_modo_conduccion.getValue();
@@ -53,18 +64,26 @@ public class ModoConduccionHighwayChaufferAdaptationRule extends AdaptationRule 
 			throw new RuleException("FranjaDia null value!", "Not executing the rule ...");		
 		}
 		
-		String modoConduccionAutonomo = null;
-		if ( kp_modo_conduccion_nivel_autonomo.getValue() != null ) {
-			modoConduccionAutonomo = (String) kp_modo_conduccion_nivel_autonomo.getValue();
+		if ( kp_estado_carretera.getValue() != null ) {
+			
+			modoEstadoCarretera = (String) kp_estado_carretera.getValue();
 		} else {
-			logger.trace("ModoAuto NULL! Not executing the rule ...");
-			throw new RuleException("ModoAuto NULL!", "Not executing the rule ...");
+			logger.trace("asdfasdf NULL! Not executing the rule ...");
+			throw new RuleException("FranjaDia null value!", "Not executing the rule ...");		
+		}
+		
+		if ( kp_tipo_carretera.getValue() != null ) {
+			
+			modoTipoCarretera = (String) kp_tipo_carretera.getValue();
+		} else {
+			logger.trace("asdfasdf NULL! Not executing the rule ...");
+			throw new RuleException("FranjaDia null value!", "Not executing the rule ...");		
 		}
 
-		if ( modoConduccion.equals("3") && modoConduccionAutonomo.equals("HighwayChauffer") ) {
-			
-			return this.configuracionSistemaActivarControlTrafficJamChauffer();
-						
+		if ( modoConduccion.equals("3") && modoTipoCarretera.equals("HIGHWAY") && modoEstadoCarretera.equals("FLUID")) {
+			return this.configuracionSistemaActivarControlHighwayChauffer();
+		} else if (!modoTipoCarretera.equals("HIGHWAY") || !modoEstadoCarretera.equals("FLUID")) {
+			return this.configuracionSistemaDesactivarControlHighwayChauffer();	
 		} else {
 			logger.trace("Cannot understand knowledge property value. Not executing the rule ...");
 			throw new RuleException("Unknown property value",
@@ -72,14 +91,38 @@ public class ModoConduccionHighwayChaufferAdaptationRule extends AdaptationRule 
 		}
 	}
 	
-	protected IRuleComponentsSystemConfiguration configuracionSistemaActivarControlTrafficJamChauffer() {
+	protected IRuleComponentsSystemConfiguration configuracionSistemaActivarControlHighwayChauffer() {
 		// Activamos el controlador de trafico
 		IRuleComponentsSystemConfiguration theNextSystemConfiguration = SystemConfigurationHelper.createPartialSystemConfiguration(this.getId() + "_" + ITimeStamped.getCurrentTimeStamp());
 
 		// Agregamos el controlador de trafico
 		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "driving.L3.HighwayChauffer", "1.0.0");
-		SystemConfigurationHelper.componentToRemove(theNextSystemConfiguration, "driving.L3.CityChauffer", "1.0.0");
-		SystemConfigurationHelper.componentToRemove(theNextSystemConfiguration, "driving.L3.TrafficJamChauffer", "1.0.0");
+		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
+				"driving.L3.HighwayChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_NOTIFICATIONSERVICE,
+				"interaction.NotificationService", "1.0.0", NotificationServiceARC.PROVIDED_SERVICE);
+		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
+				"driving.L3.HighwayChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_ENGINE,
+				"device.Engine", "1.0.0", EngineARC.PROVIDED_DEVICE);
+		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
+				"driving.L3.HighwayChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_HUMANSENSORS,
+				"device.HumanSensors", "1.0.0", HumanSensorsARC.PROVIDED_SENSOR);
+		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
+				"driving.L3.HighwayChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_ROADSENSOR,
+				"device.RoadSensor", "1.0.0", RoadSensorARC.PROVIDED_SENSOR);
+		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
+				"driving.L3.HighwayChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_STEERING,
+				"device.Steering", "1.0.0", SteeringARC.PROVIDED_DEVICE);
+		
+		return theNextSystemConfiguration;		
+		
+	}
+	
+	protected IRuleComponentsSystemConfiguration configuracionSistemaDesactivarControlHighwayChauffer() {
+		// Activamos el controlador de trafico
+		IRuleComponentsSystemConfiguration theNextSystemConfiguration = SystemConfigurationHelper.createPartialSystemConfiguration(this.getId() + "_" + ITimeStamped.getCurrentTimeStamp());
+
+		// Agregamos el controlador de trafico
+		SystemConfigurationHelper.componentToRemove(theNextSystemConfiguration, "driving.L3.HighwayChauffer", "1.0.0");
 
 		return theNextSystemConfiguration;		
 		

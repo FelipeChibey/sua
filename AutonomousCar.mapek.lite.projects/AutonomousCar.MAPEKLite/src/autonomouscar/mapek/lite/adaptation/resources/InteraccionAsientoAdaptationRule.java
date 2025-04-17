@@ -1,7 +1,6 @@
 package autonomouscar.mapek.lite.adaptation.resources;
 
 import org.osgi.framework.BundleContext;
-
 import es.upv.pros.tatami.adaptation.mapek.lite.ARC.structures.systemconfiguration.interfaces.IRuleComponentsSystemConfiguration;
 import es.upv.pros.tatami.adaptation.mapek.lite.artifacts.components.AdaptationRule;
 import es.upv.pros.tatami.adaptation.mapek.lite.artifacts.interfaces.IKnowledgeProperty;
@@ -11,6 +10,9 @@ import es.upv.pros.tatami.adaptation.mapek.lite.helpers.SystemConfigurationHelpe
 import es.upv.pros.tatami.adaptation.mapek.lite.structures.systemconfiguration.interfaces.IRuleSystemConfiguration;
 import es.upv.pros.tatami.osgi.utils.interfaces.ITimeStamped;
 import es.upv.pros.tatami.osgi.utils.logger.SmartLogger;
+import sua.autonomouscar.infraestructure.interaction.ARC.NotificationServiceARC;
+import sua.autonomouscar.infraestructure.interaction.ARC.HapticVibrationARC;
+import sua.autonomouscar.infraestructure.interaction.ARC.VisualIconARC;
 
 public class InteraccionAsientoAdaptationRule extends AdaptationRule {
 	
@@ -22,7 +24,6 @@ public class InteraccionAsientoAdaptationRule extends AdaptationRule {
 	
 	public InteraccionAsientoAdaptationRule(BundleContext context) {
 		super(context, ID);
-		this.setListenToKnowledgePropertyChanges("ModoConduccion");
 		this.setListenToKnowledgePropertyChanges("EstadoAsiento");
 
 		kp_modo_conduccion = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccion");
@@ -31,7 +32,6 @@ public class InteraccionAsientoAdaptationRule extends AdaptationRule {
 
 	@Override
 	public boolean checkAffectedByChange(IKnowledgeProperty property) {
-		
 		if (kp_modo_conduccion == null || kp_estado_asiento == null) {
 			logger.trace("Required Knowledge property not set. Not executing the rule ...");
 			return false;
@@ -41,8 +41,9 @@ public class InteraccionAsientoAdaptationRule extends AdaptationRule {
 	
 	@Override
 	public IRuleSystemConfiguration onExecute(IKnowledgeProperty property) throws RuleException {
-		
+		Boolean estadoAsiento = null;
 		String modoConduccion = null;
+		
 		if ( kp_modo_conduccion.getValue() != null ) {
 			
 			modoConduccion = (String) kp_modo_conduccion.getValue();
@@ -51,19 +52,17 @@ public class InteraccionAsientoAdaptationRule extends AdaptationRule {
 			throw new RuleException("FranjaDia null value!", "Not executing the rule ...");		
 		}
 		
-		String estadoAsiento = null;
 		if ( kp_estado_asiento.getValue() != null ) {
-			estadoAsiento = (String) kp_estado_asiento.getValue();
+			estadoAsiento = (Boolean) kp_estado_asiento.getValue();
 		} else {
 			logger.trace("ModoAuto NULL! Not executing the rule ...");
 			throw new RuleException("ModoAuto NULL!", "Not executing the rule ...");
 		}
 
-		if ( modoConduccion.equals("3") && estadoAsiento.equals("TRUE") ) {
-			
+		if (modoConduccion.equals("3") && estadoAsiento) {
 			return this.configuracionSistemaActivarInteraccion();
 		}
-		else if (modoConduccion.equals("3") && estadoAsiento.equals("FALSE")) {
+		else if (modoConduccion.equals("3") && !estadoAsiento) {
 			return this.configuracionSistemaDesctivarInteraccion();	
 		} else {
 			logger.trace("Cannot understand knowledge property value. Not executing the rule ...");
@@ -76,24 +75,28 @@ public class InteraccionAsientoAdaptationRule extends AdaptationRule {
 		// Activamos el controlador de trafico
 		IRuleComponentsSystemConfiguration theNextSystemConfiguration = SystemConfigurationHelper.createPartialSystemConfiguration(this.getId() + "_" + ITimeStamped.getCurrentTimeStamp());
 
-		// Agregamos el controlador de trafico
+		// Agregamos el controlador de interaccion
 		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "interaction.NotificationService", "1.0.0");
 		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "interaction.Seat.Driver", "1.0.0");
 		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "interaction.DriverDisplay.VisualIcon", "1.0.0");
-
+		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
+				"interaction.NotificationService", "1.0.0", NotificationServiceARC.REQUIRED_SERVICE,
+				"interaction.Seat.Driver", "1.0.0", HapticVibrationARC.PROVIDED_MECHANISM);
+		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
+				"interaction.NotificationService", "1.0.0", NotificationServiceARC.REQUIRED_SERVICE,
+				"interaction.DriverDisplay.VisualIcon", "1.0.0", VisualIconARC.PROVIDED_MECHANISM);
 		return theNextSystemConfiguration;		
 		
 	}
-	
 	
 	protected IRuleComponentsSystemConfiguration configuracionSistemaDesctivarInteraccion() {
 		// Activamos el controlador de trafico
 		IRuleComponentsSystemConfiguration theNextSystemConfiguration = SystemConfigurationHelper.createPartialSystemConfiguration(this.getId() + "_" + ITimeStamped.getCurrentTimeStamp());
 
 		// Agregamos el controlador de trafico
-		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "interaction.NotificationService", "1.0.0");
-		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "interaction.Seat.Driver", "1.0.0");
-		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "interaction.DriverDisplay.VisualIcon", "1.0.0");
+		SystemConfigurationHelper.componentToRemove(theNextSystemConfiguration, "interaction.NotificationService", "1.0.0");
+		SystemConfigurationHelper.componentToRemove(theNextSystemConfiguration, "interaction.Seat.Driver", "1.0.0");
+		SystemConfigurationHelper.componentToRemove(theNextSystemConfiguration, "interaction.DriverDisplay.VisualIcon", "1.0.0");
 
 		return theNextSystemConfiguration;		
 		

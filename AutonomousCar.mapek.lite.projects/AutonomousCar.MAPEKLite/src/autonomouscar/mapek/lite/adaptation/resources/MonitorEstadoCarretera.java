@@ -23,7 +23,7 @@ public class MonitorEstadoCarretera extends Monitor {
 
 			IKnowledgeProperty kp_estado_carretera = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("EstadoCarretera");
 			
-			if (value != null) kp_estado_carretera.setValue(value);
+			if (value != null && value != kp_estado_carretera.getValue()) kp_estado_carretera.setValue(value);
 			
 		} catch (Exception e) {
 			return this;

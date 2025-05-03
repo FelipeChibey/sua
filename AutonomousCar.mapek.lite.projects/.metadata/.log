@@ -1057,3 +1057,39 @@ Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product org.eclipse.
 
 !ENTRY ch.qos.logback.classic 1 0 2025-04-17 17:25:16.144
 !MESSAGE Logback config file: /Users/felipe/eclipse-workspace/SUA_PROYECTO/AutonomousCar.mapek.lite.projects/.metadata/.plugins/org.eclipse.m2e.logback/logback.2.7.0.20241001-1350.xml
+!SESSION 2025-05-02 11:53:36.688 -----------------------------------------------
+eclipse.buildId=4.35.0.20250306-0811
+java.version=21.0.6
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=es_419
+Framework arguments:  -product org.eclipse.epp.package.rcp.product -keyring /Users/felipe/.eclipse_keyring
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product org.eclipse.epp.package.rcp.product -keyring /Users/felipe/.eclipse_keyring
+
+!ENTRY ch.qos.logback.classic 1 0 2025-05-02 11:53:39.469
+!MESSAGE Activated before the state location was initialized. Retry after the state location is initialized.
+
+!ENTRY ch.qos.logback.classic 1 0 2025-05-02 11:53:44.714
+!MESSAGE Logback config file: /Users/felipe/eclipse-workspace/SUA_PROYECTO/AutonomousCar.mapek.lite.projects/.metadata/.plugins/org.eclipse.m2e.logback/logback.2.7.0.20241001-1350.xml
+
+!ENTRY org.eclipse.jdt.launching 4 120 2025-05-03 17:12:41.481
+!MESSAGE Cannot connect to VM
+!STACK 0
+java.net.BindException: Address already in use
+	at java.base/sun.nio.ch.Net.bind0(Native Method)
+	at java.base/sun.nio.ch.Net.bind(Net.java:565)
+	at java.base/sun.nio.ch.Net.bind(Net.java:554)
+	at java.base/sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:636)
+	at java.base/java.net.ServerSocket.bind(ServerSocket.java:391)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:278)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:171)
+	at org.eclipse.jdi.internal.connect.SocketTransportService.startListening(SocketTransportService.java:290)
+	at org.eclipse.jdi.internal.connect.SocketTransportImpl.startListening(SocketTransportImpl.java:53)
+	at org.eclipse.jdi.internal.connect.SocketListeningConnectorImpl.startListening(SocketListeningConnectorImpl.java:141)
+	at org.eclipse.jdt.internal.launching.StandardVMDebugger.run(StandardVMDebugger.java:335)
+	at org.eclipse.pde.launching.AbstractPDELaunchConfiguration.launch(AbstractPDELaunchConfiguration.java:164)
+	at org.eclipse.pde.launching.OSGiLaunchConfigurationDelegate.launch(OSGiLaunchConfigurationDelegate.java:54)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:777)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:688)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1052)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$1.run(DebugUIPlugin.java:1255)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)

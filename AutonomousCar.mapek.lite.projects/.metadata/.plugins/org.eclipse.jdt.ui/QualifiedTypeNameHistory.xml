@@ -2,4 +2,19 @@
 <qualifiedTypeNameHistroy>
     <fullyQualifiedTypeName name="org.osgi.framework.ServiceListener"/>
     <fullyQualifiedTypeName name="org.osgi.framework.ServiceEvent"/>
+    <fullyQualifiedTypeName name="sua.autonomouscar.infraestructure.driving.ARC.DrivingServiceARC"/>
+    <fullyQualifiedTypeName name="sua.autonomouscar.interaction.interfaces.INotificationService"/>
+    <fullyQualifiedTypeName name="sua.autonomouscar.infraestructure.devices.ARC.SeatSensorARC"/>
+    <fullyQualifiedTypeName name="sua.autonomouscar.infraestructure.interaction.ARC.HapticVibrationARC"/>
+    <fullyQualifiedTypeName name="sua.autonomouscar.infraestructure.interaction.ARC.VisualIconARC"/>
+    <fullyQualifiedTypeName name="sua.autonomouscar.infraestructure.driving.ARC.L3_DrivingServiceARC"/>
+    <fullyQualifiedTypeName name="sua.autonomouscar.infraestructure.interaction.ARC.NotificationServiceARC"/>
+    <fullyQualifiedTypeName name="sua.autonomouscar.infraestructure.devices.ARC.EngineARC"/>
+    <fullyQualifiedTypeName name="sua.autonomouscar.infraestructure.devices.ARC.HumanSensorsARC"/>
+    <fullyQualifiedTypeName name="sua.autonomouscar.infraestructure.devices.ARC.RoadSensorARC"/>
+    <fullyQualifiedTypeName name="sua.autonomouscar.infraestructure.devices.ARC.SteeringARC"/>
+    <fullyQualifiedTypeName name="sua.autonomouscar.infraestructure.devices.ARC.LineSensorARC"/>
+    <fullyQualifiedTypeName name="sua.autonomouscar.infraestructure.driving.ARC.FallbackPlanARC"/>
+    <fullyQualifiedTypeName name="java.lang.Object"/>
+    <fullyQualifiedTypeName name="sua.autonomouscar.infraestructure.devices.ARC.DistanceSensorARC"/>
 </qualifiedTypeNameHistroy>

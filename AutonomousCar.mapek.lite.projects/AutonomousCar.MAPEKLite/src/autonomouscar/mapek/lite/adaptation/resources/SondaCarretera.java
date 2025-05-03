@@ -32,8 +32,7 @@ public class SondaCarretera extends Probe implements ServiceListener {
 
 	@Override
 	public void serviceChanged(ServiceEvent event) {
-		// TODO Auto-generated method stub
-		
+
 		switch (event.getType()) {
 			case ServiceEvent.REGISTERED:
 			case ServiceEvent.MODIFIED:

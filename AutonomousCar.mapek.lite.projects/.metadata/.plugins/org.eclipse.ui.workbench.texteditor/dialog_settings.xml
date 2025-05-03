@@ -10,12 +10,21 @@
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
-			<item value="theIluminacionConfortAdaptationRuleARC"/>
-			<item value="sondaca"/>
-			<item value="received"/>
-			<item value="receibed"/>
-			<item value="recibed"/>
-			<item value="Road Status"/>
+			<item value="set"/>
+			<item value="RoadSensor"/>
+			<item value="interaction"/>
+			<item value="interaction.Seat.Driver"/>
+			<item value="NotificationService"/>
+			<item value="theNextSystemConfiguration"/>
+			<item value="std"/>
+			<item value="high"/>
+			<item value="face"/>
+			<item value="FrontDistanceSensor"/>
+			<item value="notifica"/>
+			<item value="seat"/>
+			<item value="setdriverseat"/>
+			<item value="road"/>
+			<item value="human"/>
 		</list>
 		<list key="replacehistory">
 		</list>

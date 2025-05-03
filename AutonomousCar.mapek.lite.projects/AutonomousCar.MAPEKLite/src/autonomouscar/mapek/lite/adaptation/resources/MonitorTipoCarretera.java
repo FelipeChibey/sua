@@ -23,7 +23,7 @@ public class MonitorTipoCarretera extends Monitor {
 
 			IKnowledgeProperty kp_tipo_carretera = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("TipoCarretera");
 			
-			if(value != null) kp_tipo_carretera.setValue(value);
+			if(value != null && value != kp_tipo_carretera.getValue()) kp_tipo_carretera.setValue(value);
 			
 		} catch (Exception e) {
 			return this;

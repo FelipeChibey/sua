@@ -11,10 +11,13 @@ import es.upv.pros.tatami.adaptation.mapek.lite.helpers.SystemConfigurationHelpe
 import es.upv.pros.tatami.adaptation.mapek.lite.structures.systemconfiguration.interfaces.IRuleSystemConfiguration;
 import es.upv.pros.tatami.osgi.utils.interfaces.ITimeStamped;
 import es.upv.pros.tatami.osgi.utils.logger.SmartLogger;
+import sua.autonomouscar.infraestructure.devices.ARC.DistanceSensorARC;
 import sua.autonomouscar.infraestructure.devices.ARC.EngineARC;
 import sua.autonomouscar.infraestructure.devices.ARC.HumanSensorsARC;
+import sua.autonomouscar.infraestructure.devices.ARC.LineSensorARC;
 import sua.autonomouscar.infraestructure.devices.ARC.RoadSensorARC;
 import sua.autonomouscar.infraestructure.devices.ARC.SteeringARC;
+import sua.autonomouscar.infraestructure.driving.ARC.FallbackPlanARC;
 import sua.autonomouscar.infraestructure.driving.ARC.L3_DrivingServiceARC;
 import sua.autonomouscar.infraestructure.interaction.ARC.NotificationServiceARC;
 
@@ -80,10 +83,12 @@ public class ModoConduccionTrafficJamChaufferAdaptationRule extends AdaptationRu
 			throw new RuleException("FranjaDia null value!", "Not executing the rule ...");		
 		}
 
-		if (modoConduccion.equals("3") && modoTipoCarretera.equals("HIGHWAY") && (modoEstadoCarretera.equals("JAM") || modoEstadoCarretera.equals("COLLAPSED"))) {
+		if (modoConduccion.equals("3") && 	
+				(modoTipoCarretera.equals("HIGHWAY") || modoTipoCarretera.equals("STD_ROAD")) && 
+				(modoEstadoCarretera.equals("JAM") || modoEstadoCarretera.equals("COLLAPSED"))) {
 			return this.configuracionSistemaActivarControlTrafficJamChauffer();
-		} else if (!modoTipoCarretera.equals("HIGHWAY") || modoEstadoCarretera.equals("FLUID")) {
-			return this.configuracionSistemaDesactivarControlTrafficJamChauffer();	
+		} else if (modoTipoCarretera.equals("CITY") || modoEstadoCarretera.equals("FLUID")) {
+ 			return this.configuracionSistemaDesactivarControlTrafficJamChauffer();	
 		} else {
 			logger.trace("Cannot understand knowledge property value. Not executing the rule ...");
 			throw new RuleException("Unknown property value",
@@ -97,6 +102,22 @@ public class ModoConduccionTrafficJamChaufferAdaptationRule extends AdaptationRu
 
 		// Agregamos el controlador de trafico
 		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "driving.L3.TrafficJamChauffer", "1.0.0");
+		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "driving.FallbackPlan.Emergency", "1.0.0");
+		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "device.HumanSensors", "1.0.0");
+		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "device.FrontDistanceSensor", "1.0.0");
+		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "device.RearDistanceSensor", "1.0.0");
+		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "device.LeftDistanceSensor", "1.0.0");
+		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "device.RightDistanceSensor", "1.0.0");
+		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "device.LeftLineSensor", "1.0.0");
+		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "device.RightLineSensor", "1.0.0");
+		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "device.Steering", "1.0.0");
+		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "device.Engine", "1.0.0");
+		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "device.RoadSensor", "1.0.0");
+		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "device.LIDAR", "1.0.0");
+		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "interaction.NotificationService", "1.0.0");
+		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "interaction.Seat.Driver", "1.0.0");
+		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "interaction.Seat.Copilot", "1.0.0");
+		
 		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
 				"driving.L3.TrafficJamChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_NOTIFICATIONSERVICE,
 				"interaction.NotificationService", "1.0.0", NotificationServiceARC.PROVIDED_SERVICE);
@@ -112,6 +133,33 @@ public class ModoConduccionTrafficJamChaufferAdaptationRule extends AdaptationRu
 		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
 				"driving.L3.TrafficJamChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_STEERING,
 				"device.Steering", "1.0.0", SteeringARC.PROVIDED_DEVICE);
+		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
+				"driving.L3.TrafficJamChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_LEFTLINESENSOR,
+				"device.LeftLineSensor", "1.0.0", LineSensorARC.PROVIDED_SENSOR);
+		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
+				"driving.L3.TrafficJamChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_RIGHTLINESENSOR,
+				"device.RightLineSensor", "1.0.0", LineSensorARC.PROVIDED_SENSOR);
+		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
+				"driving.FallbackPlan.Emergency", "1.0.0", FallbackPlanARC.REQUIRED_ENGINE,
+				"device.Engine", "1.0.0", EngineARC.PROVIDED_DEVICE);
+		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
+				"driving.FallbackPlan.Emergency", "1.0.0", FallbackPlanARC.REQUIRED_STEERING,
+				"device.Steering", "1.0.0", SteeringARC.PROVIDED_DEVICE);
+		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
+				"driving.L3.TrafficJamChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_FALLBACKPLAN,
+				"driving.FallbackPlan.Emergency", "1.0.0", FallbackPlanARC.PROVIDED_DRIVINGSERVICE);
+		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
+				"driving.L3.TrafficJamChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_RIGHTDISTANCESENSOR,
+				"device.RightDistanceSensor", "1.0.0", DistanceSensorARC.PROVIDED_SENSOR);
+		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
+				"driving.L3.TrafficJamChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_LEFTDISTANCESENSOR,
+				"device.LeftDistanceSensor", "1.0.0", DistanceSensorARC.PROVIDED_SENSOR);
+		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
+				"driving.L3.TrafficJamChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_REARDISTANCESENSOR,
+				"device.RearDistanceSensor", "1.0.0", DistanceSensorARC.PROVIDED_SENSOR);
+		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
+				"driving.L3.TrafficJamChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_FRONTDISTANCESENSOR,
+				"device.FrontDistanceSensor", "1.0.0", DistanceSensorARC.PROVIDED_SENSOR);
 
 		return theNextSystemConfiguration;		
 		

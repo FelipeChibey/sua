@@ -19,11 +19,12 @@ public class MonitorInteraccion extends Monitor {
 	public IMonitor report(Object measure) {
 		this.logger.debug(String.format("Received measure: %s", measure.toString()));
 		try {
-			String value = (String) measure;
+			Boolean value = (Boolean) measure;
 
 			IKnowledgeProperty kp_estado_asiento= BasicMAPEKLiteLoopHelper.getKnowledgeProperty("EstadoAsiento");
 
-			if (value != null && value != kp_estado_asiento.getValue())  kp_estado_asiento.setValue(value);
+			//if (value != null && value != kp_estado_asiento.getValue())  
+				kp_estado_asiento.setValue(value);
 
 		} catch (Exception e) {
 			return this;

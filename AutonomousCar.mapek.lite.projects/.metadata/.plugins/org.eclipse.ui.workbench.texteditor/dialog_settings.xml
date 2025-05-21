@@ -10,6 +10,7 @@
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="driver"/>
 			<item value="set"/>
 			<item value="RoadSensor"/>
 			<item value="interaction"/>
@@ -24,7 +25,6 @@
 			<item value="seat"/>
 			<item value="setdriverseat"/>
 			<item value="road"/>
-			<item value="human"/>
 		</list>
 		<list key="replacehistory">
 		</list>

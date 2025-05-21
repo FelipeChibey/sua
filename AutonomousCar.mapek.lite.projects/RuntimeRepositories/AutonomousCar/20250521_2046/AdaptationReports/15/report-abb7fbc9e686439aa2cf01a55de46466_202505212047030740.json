@@ -1,0 +1,1 @@
+{"symptoms":[{"adaptation-property":"EstadoCarretera","value":"JAM"}],"correlation-id":"abb7fbc9e686439aa2cf01a55de46466","id":"report-abb7fbc9e686439aa2cf01a55de46466","initiated-by-rule":"Regla Autocuracion","timestamp":"202505212047030757","status":[{"status":"REQUESTED","timestamp":"202505212047030740"},{"status":"IN_PROGRESS","timestamp":"202505212047030757"}]}

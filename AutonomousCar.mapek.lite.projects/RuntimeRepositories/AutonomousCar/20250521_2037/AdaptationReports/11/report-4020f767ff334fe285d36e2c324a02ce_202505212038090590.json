@@ -1,0 +1,1 @@
+{"symptoms":[{"adaptation-property":"TipoCarretera","value":"HIGHWAY"}],"correlation-id":"4020f767ff334fe285d36e2c324a02ce","id":"report-4020f767ff334fe285d36e2c324a02ce","initiated-by-rule":"Regla Autocuracion","timestamp":"202505212038090636","status":[{"status":"REQUESTED","timestamp":"202505212038090590"},{"status":"IN_PROGRESS","timestamp":"202505212038090636"}]}

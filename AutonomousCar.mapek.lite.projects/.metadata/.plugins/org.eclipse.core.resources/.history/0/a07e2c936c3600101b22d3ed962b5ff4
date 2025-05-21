@@ -1,0 +1,50 @@
+package autonomouscar.mapek.lite.adaptation.resources;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
+
+import sua.autonomouscar.devices.interfaces.ISeatSensor;
+import sua.autonomouscar.devices.interfaces.IThing;
+import es.upv.pros.tatami.adaptation.mapek.lite.artifacts.components.Probe;
+import es.upv.pros.tatami.osgi.utils.interfaces.IIdentifiable;
+
+public class SondaLidar extends Probe implements ServiceListener {
+	public static String ID = "Sonda Asiento";
+
+	public SondaLidar(BundleContext context) {
+		super(context, ID);
+		
+		String filter = "(&(objectclass=" + ISeatSensor.class.getName() + ")(id=DriverSeatSensor))"; 
+		try {
+			context.addServiceListener(this, filter);
+		} catch (InvalidSyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void reportarEstadoAsiento(Boolean modo) {
+		this.reportMeasure(modo);
+	}
+
+
+	@Override
+	public void serviceChanged(ServiceEvent event) {
+		// TODO Auto-generated method stub
+		
+		switch (event.getType()) {
+			case ServiceEvent.REGISTERED:
+			case ServiceEvent.MODIFIED:
+				ServiceReference sr = event.getServiceReference();
+				ISeatSensor seatSensor = (ISeatSensor) context.getService(sr);
+				this.reportarEstadoAsiento(seatSensor.isSeatOccuppied());
+				
+			//case ServiceEvent.UNREGISTERING:
+				
+		}
+	}
+}
+

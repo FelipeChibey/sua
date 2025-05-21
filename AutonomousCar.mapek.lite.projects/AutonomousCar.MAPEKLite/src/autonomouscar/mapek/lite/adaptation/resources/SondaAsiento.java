@@ -6,8 +6,10 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
-import sua.autonomouscar.devices.interfaces.IHumanSensors;
+import sua.autonomouscar.devices.interfaces.ISeatSensor;
+import sua.autonomouscar.devices.interfaces.IThing;
 import es.upv.pros.tatami.adaptation.mapek.lite.artifacts.components.Probe;
+import es.upv.pros.tatami.osgi.utils.interfaces.IIdentifiable;
 
 public class SondaAsiento extends Probe implements ServiceListener {
 	public static String ID = "Sonda Asiento";
@@ -15,7 +17,7 @@ public class SondaAsiento extends Probe implements ServiceListener {
 	public SondaAsiento(BundleContext context) {
 		super(context, ID);
 		
-		String filter = "(objectclass=" + IHumanSensors.class.getName() + ")"; // cambiar por ihumansensor
+		String filter = "(&(objectclass=" + ISeatSensor.class.getName() + ")(id=DriverSeatSensor))"; 
 		try {
 			context.addServiceListener(this, filter);
 		} catch (InvalidSyntaxException e) {
@@ -37,8 +39,11 @@ public class SondaAsiento extends Probe implements ServiceListener {
 			case ServiceEvent.REGISTERED:
 			case ServiceEvent.MODIFIED:
 				ServiceReference sr = event.getServiceReference();
-				IHumanSensors seatSensor = (IHumanSensors) context.getService(sr);
-				this.reportarEstadoAsiento(seatSensor.isDriverSeatOccupied());
+				ISeatSensor seatSensor = (ISeatSensor) context.getService(sr);
+				this.reportarEstadoAsiento(seatSensor.isSeatOccuppied());
+				
+			//case ServiceEvent.UNREGISTERING:
+				
 		}
 	}
 }

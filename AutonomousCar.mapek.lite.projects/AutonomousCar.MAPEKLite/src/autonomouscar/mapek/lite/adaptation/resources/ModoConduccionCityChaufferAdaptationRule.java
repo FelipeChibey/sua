@@ -19,6 +19,7 @@ import sua.autonomouscar.infraestructure.devices.ARC.EngineARC;
 import sua.autonomouscar.infraestructure.devices.ARC.HumanSensorsARC;
 import sua.autonomouscar.infraestructure.devices.ARC.LineSensorARC;
 import sua.autonomouscar.infraestructure.devices.ARC.RoadSensorARC;
+import sua.autonomouscar.infraestructure.devices.ARC.SeatSensorARC;
 import sua.autonomouscar.infraestructure.devices.ARC.SteeringARC;
 
 public class ModoConduccionCityChaufferAdaptationRule extends AdaptationRule {
@@ -116,6 +117,9 @@ public class ModoConduccionCityChaufferAdaptationRule extends AdaptationRule {
 		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
 				"driving.L3.CityChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_HUMANSENSORS,
 				"device.HumanSensors", "1.0.0", HumanSensorsARC.PROVIDED_SENSOR);
+		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
+				"device.HumanSensors", "1.0.0", HumanSensorsARC.REQUIRED_DRIVERSEATSENSOR,
+				"interaction.Seat.Driver", "1.0.0", SeatSensorARC.PROVIDED_SENSOR);
 		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
 				"driving.L3.CityChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_ROADSENSOR,
 				"device.RoadSensor", "1.0.0", RoadSensorARC.PROVIDED_SENSOR);

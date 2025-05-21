@@ -1,0 +1,1 @@
+{"symptoms":[{"adaptation-property":"TipoCarretera","value":"CITY"}],"correlation-id":"a7a3520f2a6f4593a7e841e5b706a853","id":"report-a7a3520f2a6f4593a7e841e5b706a853","initiated-by-rule":"Regla Autocuracion","timestamp":"202505212048300505","status":[{"status":"REQUESTED","timestamp":"202505212048300455"},{"status":"IN_PROGRESS","timestamp":"202505212048300505"}]}

@@ -6,11 +6,14 @@ import org.osgi.framework.BundleContext;
 import autonomouscar.mapek.lite.adaptation.resources.ModoConduccionTrafficJamChaufferAdaptationRule;
 import autonomouscar.mapek.lite.adaptation.resources.ModoConduccionHighwayChaufferAdaptationRule;
 import autonomouscar.mapek.lite.adaptation.resources.ModoConduccionCityChaufferAdaptationRule;
+import autonomouscar.mapek.lite.adaptation.resources.AutoCuracionAdaptationRule;
 import autonomouscar.mapek.lite.adaptation.resources.InteraccionAsientoAdaptationRule;
 import autonomouscar.mapek.lite.adaptation.resources.MonitorTipoCarretera;
 import autonomouscar.mapek.lite.adaptation.resources.MonitorEstadoCarretera;
 import autonomouscar.mapek.lite.adaptation.resources.MonitorInteraccion;
+import autonomouscar.mapek.lite.adaptation.resources.MonitorModoProteccion;
 import autonomouscar.mapek.lite.adaptation.resources.SondaCarretera;
+import autonomouscar.mapek.lite.adaptation.resources.SondaCarril;
 import autonomouscar.mapek.lite.adaptation.resources.SondaTrafico;
 import autonomouscar.mapek.lite.adaptation.resources.SondaAsiento;
 import es.upv.pros.tatami.adaptation.mapek.lite.ARC.artifacts.interfaces.IAdaptiveReadyComponent;
@@ -45,6 +48,7 @@ public class Activator implements BundleActivator {
 		IComponentsSystemConfiguration theInitialSystemConfiguration = 
 				SystemConfigurationHelper.createSystemConfiguration("InititalConfiguration");
 		SystemConfigurationHelper.addComponent(theInitialSystemConfiguration, "device.RoadSensor", "1.0.0");
+		SystemConfigurationHelper.addComponent(theInitialSystemConfiguration, "device.HumanSensors", "1.0.0");
 		BasicMAPEKLiteLoopHelper.INITIAL_SYSTEMCONFIGURATION = theInitialSystemConfiguration;
 
 		BasicMAPEKLiteLoopHelper.MODELSREPOSITORY_FOLDER = System.getProperty("modelsrepository.folder");
@@ -63,6 +67,8 @@ public class Activator implements BundleActivator {
 		
 		IKnowledgeProperty kp_EstadoAsiento = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("EstadoAsiento");
 		
+		IKnowledgeProperty kp_EstadoSensorCarril = BasicMAPEKLiteLoopHelper.createKnowledgeProperty("EstadoSensorCarril");
+		
 		kp_Modo.setValue("3");
 
 		// ADAPTATION RULES
@@ -70,11 +76,13 @@ public class Activator implements BundleActivator {
  		IAdaptiveReadyComponent highwayAdaptationRuleARC = BasicMAPEKLiteLoopHelper.deployAdaptationRule(new ModoConduccionHighwayChaufferAdaptationRule(bundleContext));
  		IAdaptiveReadyComponent cityAdaptationRuleARC = BasicMAPEKLiteLoopHelper.deployAdaptationRule(new ModoConduccionCityChaufferAdaptationRule(bundleContext));
  		IAdaptiveReadyComponent asientoAdaptationRuleARC = BasicMAPEKLiteLoopHelper.deployAdaptationRule(new InteraccionAsientoAdaptationRule(bundleContext));
+ 		IAdaptiveReadyComponent autoCuracionRuleARC = BasicMAPEKLiteLoopHelper.deployAdaptationRule(new AutoCuracionAdaptationRule(bundleContext));
  		
 		// MONITORS
 		IAdaptiveReadyComponent theModoMonitorARC = BasicMAPEKLiteLoopHelper.deployMonitor(new MonitorTipoCarretera(bundleContext));
 		IAdaptiveReadyComponent theTraficoMonitorARC = BasicMAPEKLiteLoopHelper.deployMonitor(new MonitorEstadoCarretera(bundleContext));
 		IAdaptiveReadyComponent theInteraccionARC = BasicMAPEKLiteLoopHelper.deployMonitor(new MonitorInteraccion(bundleContext));
+		IAdaptiveReadyComponent monitorModoProteccionARC = BasicMAPEKLiteLoopHelper.deployMonitor(new MonitorModoProteccion(bundleContext));
 
 		// PROBES
 		SondaCarretera sc = new SondaCarretera(bundleContext);
@@ -85,6 +93,9 @@ public class Activator implements BundleActivator {
 		
 		SondaAsiento sa = new SondaAsiento(bundleContext);
 		IAdaptiveReadyComponent theInteraccionARC3 = BasicMAPEKLiteLoopHelper.deployProbe(sa, theInteraccionARC);
+		
+		SondaCarril scarril = new SondaCarril(bundleContext);
+		IAdaptiveReadyComponent theInteraccionARC4 = BasicMAPEKLiteLoopHelper.deployProbe(scarril, monitorModoProteccionARC);
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {

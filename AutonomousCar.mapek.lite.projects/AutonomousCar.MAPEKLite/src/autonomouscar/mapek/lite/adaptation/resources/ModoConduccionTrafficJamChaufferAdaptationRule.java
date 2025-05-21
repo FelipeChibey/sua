@@ -84,7 +84,7 @@ public class ModoConduccionTrafficJamChaufferAdaptationRule extends AdaptationRu
 		}
 
 		if (modoConduccion.equals("3") && 	
-				(modoTipoCarretera.equals("HIGHWAY") || modoTipoCarretera.equals("STD_ROAD")) && 
+				modoTipoCarretera.equals("HIGHWAY") && 
 				(modoEstadoCarretera.equals("JAM") || modoEstadoCarretera.equals("COLLAPSED"))) {
 			return this.configuracionSistemaActivarControlTrafficJamChauffer();
 		} else if (modoTipoCarretera.equals("CITY") || modoEstadoCarretera.equals("FLUID")) {
@@ -129,7 +129,7 @@ public class ModoConduccionTrafficJamChaufferAdaptationRule extends AdaptationRu
 				"device.HumanSensors", "1.0.0", HumanSensorsARC.PROVIDED_SENSOR);
 		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
 				"driving.L3.TrafficJamChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_ROADSENSOR,
-				"device.RoadSensor", "1.0.0", RoadSensorARC.PROVIDED_SENSOR);
+				"device.RoadSensors", "1.0.0", RoadSensorARC.PROVIDED_SENSOR);
 		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
 				"driving.L3.TrafficJamChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_STEERING,
 				"device.Steering", "1.0.0", SteeringARC.PROVIDED_DEVICE);

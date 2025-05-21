@@ -1,0 +1,44 @@
+package autonomouscar.mapek.lite.adaptation.resources;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+
+import sua.autonomouscar.devices.interfaces.ILineSensor;
+import es.upv.pros.tatami.adaptation.mapek.lite.artifacts.components.Probe;
+
+public class SondaCarril extends Probe implements ServiceListener {
+	public static String ID = "Sonda Carril";
+
+	public SondaCarril(BundleContext context) {
+		super(context, ID);
+		
+		String filter = "(objectclass=" + ILineSensor.class.getName() + ")";
+		try {
+			context.addServiceListener(this, filter);
+		} catch (InvalidSyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void reportarEstado(Boolean modo) {
+		this.reportMeasure(modo);
+	}
+
+	@Override
+	public void serviceChanged(ServiceEvent event) {
+		// TODO Auto-generated method stub
+		
+		switch (event.getType()) {
+			case ServiceEvent.UNREGISTERING:
+				this.reportarEstado(false);
+				break;
+			case ServiceEvent.REGISTERED:
+				this.reportarEstado(true);
+				break;
+		}
+	}
+}
+

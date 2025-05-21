@@ -28,25 +28,28 @@ public class Activator implements BundleActivator {
 		// Driver Face Monitor
 		this.driverFaceMonitorARC = new DriverFaceMonitorARC(bundleContext, "device.DriverFaceMonitor", "DriverFaceMonitor");
 		this.driverFaceMonitorARC.start();
-	
+		this.driverFaceMonitorARC.deploy();
 		
 		// Driver Seat Sensor
 		this.driverSeatSensorARC = new SeatSensorARC(bundleContext, "device.DriverSeatSensor", "DriverSeatSensor");
 		this.driverSeatSensorARC.start();
+		this.driverSeatSensorARC.deploy();
 		
 		// Copilot Seat Sensor
 		this.copilotSeatSensorARC = new SeatSensorARC(bundleContext, "device.CopilotSeatSensor", "CopilotSeatSensor");
 		this.copilotSeatSensorARC.start();
+		this.copilotSeatSensorARC.deploy();
 		
 		// Driver Hands On Wheel Sensor
 		this.howSensorARC = new HandsOnWheelSensorARC(bundleContext, "device.HandsOnWheelSensor", "HandsOnWheelSensor");
 		this.howSensorARC.start();
+		this.howSensorARC.deploy();
 
 		// Human Sensors (aggregate)
 		this.humanSensorsARC = new HumanSensorsARC(bundleContext, "device.HumanSensors", "HumanSensors");
 		this.humanSensorsARC.start();
-
-		/*
+		this.humanSensorsARC.deploy();
+		
 		this.humanSensorsARC.bindService(HumanSensorsARC.REQUIRED_FACEMONITOR, 
 									  driverFaceMonitorARC.getServiceSupply(DriverFaceMonitorARC.PROVIDED_SENSOR));
 
@@ -58,7 +61,7 @@ public class Activator implements BundleActivator {
 
 		this.humanSensorsARC.bindService(HumanSensorsARC.REQUIRED_HANDSONWHEELSENSOR, 
 				howSensorARC.getServiceSupply(HandsOnWheelSensorARC.PROVIDED_SENSOR));
-	    */
+	    
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {

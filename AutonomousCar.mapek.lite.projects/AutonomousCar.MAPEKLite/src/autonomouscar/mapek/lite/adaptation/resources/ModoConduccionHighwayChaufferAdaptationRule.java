@@ -85,11 +85,11 @@ public class ModoConduccionHighwayChaufferAdaptationRule extends AdaptationRule 
 		}
 
 		if ( modoConduccion.equals("3") && 
-		    (modoTipoCarretera.equals("HIGHWAY") || modoTipoCarretera.equals("STD_ROAD")) && 
+		    modoTipoCarretera.equals("HIGHWAY") && 
 		    modoEstadoCarretera.equals("FLUID")) 
 		{
 			return this.configuracionSistemaActivarControlHighwayChauffer();
-		} else if (!(modoTipoCarretera.equals("HIGHWAY") || modoTipoCarretera.equals("STD_ROAD")) || !modoEstadoCarretera.equals("FLUID")) {
+		} else if (!modoTipoCarretera.equals("HIGHWAY") && !modoEstadoCarretera.equals("FLUID")) {
 			return this.configuracionSistemaDesactivarControlHighwayChauffer();	
 		} else {
 			logger.trace("Cannot understand knowledge property value. Not executing the rule ...");
@@ -130,7 +130,7 @@ public class ModoConduccionHighwayChaufferAdaptationRule extends AdaptationRule 
 				"driving.L3.HighwayChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_HUMANSENSORS,
 				"device.HumanSensors", "1.0.0", HumanSensorsARC.PROVIDED_SENSOR);
 		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
-				"device.HumanSensor", "1.0.0", HumanSensorsARC.REQUIRED_DRIVERSEATSENSOR,
+				"device.HumanSensors", "1.0.0", HumanSensorsARC.REQUIRED_DRIVERSEATSENSOR,
 				"interaction.Seat.Driver", "1.0.0", SeatSensorARC.PROVIDED_SENSOR);
 		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
 				"driving.L3.HighwayChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_ROADSENSOR,

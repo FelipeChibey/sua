@@ -1,6 +1,6 @@
 package sua.autonomouscar.devices.interfaces;
 
-public interface ISeatSensor {
+public interface ISeatSensor extends IThing {
 	
 	public boolean isSeatOccuppied();
 	

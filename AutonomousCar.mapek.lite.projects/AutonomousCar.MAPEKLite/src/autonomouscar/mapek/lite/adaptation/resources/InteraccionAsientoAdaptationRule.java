@@ -77,7 +77,9 @@ public class InteraccionAsientoAdaptationRule extends AdaptationRule {
 
 		// Agregamos el controlador de interaccion
 		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "interaction.NotificationService", "1.0.0");
-		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "interaction.Seat.Driver", "1.0.0");
+
+		// Asumimos que este componente interaction.Seat.Driver es el vibrador del asiento.
+		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "interaction.Seat.Driver", "1.0.0"); 
 		SystemConfigurationHelper.componentToAdd(theNextSystemConfiguration, "interaction.DriverDisplay.VisualIcon", "1.0.0");
 		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
 				"interaction.NotificationService", "1.0.0", NotificationServiceARC.REQUIRED_SERVICE,
@@ -85,8 +87,8 @@ public class InteraccionAsientoAdaptationRule extends AdaptationRule {
 		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
 				"interaction.NotificationService", "1.0.0", NotificationServiceARC.REQUIRED_SERVICE,
 				"interaction.DriverDisplay.VisualIcon", "1.0.0", VisualIconARC.PROVIDED_MECHANISM);
-		return theNextSystemConfiguration;		
 		
+		return theNextSystemConfiguration;		
 	}
 	
 	protected IRuleComponentsSystemConfiguration configuracionSistemaDesctivarInteraccion() {

@@ -18,5 +18,10 @@
     <fullyQualifiedTypeName name="sua.autonomouscar.infraestructure.devices.ARC.DistanceSensorARC"/>
     <fullyQualifiedTypeName name="es.upv.pros.tatami.osgi.utils.interfaces.IIdentifiable"/>
     <fullyQualifiedTypeName name="sua.autonomouscar.devices.interfaces.IThing"/>
+    <fullyQualifiedTypeName name="autonomouscar.mapek.lite.adaptation.resources.AutoCuracionAdaptationRule"/>
+    <fullyQualifiedTypeName name="autonomouscar.mapek.lite.adaptation.resources.MonitorModoProteccion"/>
+    <fullyQualifiedTypeName name="autonomouscar.mapek.lite.adaptation.resources.SondaCarril"/>
+    <fullyQualifiedTypeName name="sua.autonomouscar.devices.interfaces.ISpeedometer"/>
     <fullyQualifiedTypeName name="org.osgi.framework.ServiceEvent"/>
+    <fullyQualifiedTypeName name="sua.autonomouscar.devices.interfaces.ILineSensor"/>
 </qualifiedTypeNameHistroy>

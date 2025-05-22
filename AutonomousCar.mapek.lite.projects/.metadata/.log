@@ -4269,3 +4269,16 @@ Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product org.eclipse.
 
 !ENTRY ch.qos.logback.classic 1 0 2025-05-21 18:48:50.999
 !MESSAGE Logback config file: /Users/felipe/eclipse-workspace/SUA_PROYECTO/AutonomousCar.mapek.lite.projects/.metadata/.plugins/org.eclipse.m2e.logback/logback.2.7.0.20241001-1350.xml
+!SESSION 2025-05-22 11:34:10.510 -----------------------------------------------
+eclipse.buildId=4.35.0.20250306-0811
+java.version=21.0.6
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=es_419
+Framework arguments:  -product org.eclipse.epp.package.rcp.product -keyring /Users/felipe/.eclipse_keyring
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product org.eclipse.epp.package.rcp.product -keyring /Users/felipe/.eclipse_keyring
+
+!ENTRY ch.qos.logback.classic 1 0 2025-05-22 11:34:13.015
+!MESSAGE Activated before the state location was initialized. Retry after the state location is initialized.
+
+!ENTRY ch.qos.logback.classic 1 0 2025-05-22 11:35:02.324
+!MESSAGE Logback config file: /Users/felipe/eclipse-workspace/SUA_PROYECTO/AutonomousCar.mapek.lite.projects/.metadata/.plugins/org.eclipse.m2e.logback/logback.2.7.0.20241001-1350.xml

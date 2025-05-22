@@ -23,7 +23,7 @@ public class MonitorInteraccion extends Monitor {
 
 			IKnowledgeProperty kp_estado_asiento= BasicMAPEKLiteLoopHelper.getKnowledgeProperty("EstadoAsiento");
 
-			//if (value != null && value != kp_estado_asiento.getValue())  
+			if (value != null && value != kp_estado_asiento.getValue())  
 				kp_estado_asiento.setValue(value);
 
 		} catch (Exception e) {

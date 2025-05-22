@@ -30,8 +30,7 @@ public class AutoCuracionAdaptationRule extends AdaptationRule {
 	
 	public AutoCuracionAdaptationRule(BundleContext context) {
 		super(context, ID);
-		this.setListenToKnowledgePropertyChanges("TipoCarretera");
-		this.setListenToKnowledgePropertyChanges("EstadoCarretera");
+		this.setListenToKnowledgePropertyChanges("EstadoSensorCarril");
 
 		kp_estado_sensor_carril = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("EstadoSensorCarril");
 	}

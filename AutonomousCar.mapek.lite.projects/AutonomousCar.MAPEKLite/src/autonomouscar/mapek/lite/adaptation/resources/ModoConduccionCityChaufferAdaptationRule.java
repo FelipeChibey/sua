@@ -30,17 +30,16 @@ public class ModoConduccionCityChaufferAdaptationRule extends AdaptationRule {
 	IKnowledgeProperty kp_modo_conduccion = null;
 	IKnowledgeProperty kp_modo_conduccion_nivel_autonomo = null;
 	IKnowledgeProperty kp_tipo_carretera = null;
-	IKnowledgeProperty kp_estado_carretera = null;
 	
 	public ModoConduccionCityChaufferAdaptationRule(BundleContext context) {
 		super(context, ID);
+		this.setListenToKnowledgePropertyChanges("ModoConduccion");
+		this.setListenToKnowledgePropertyChanges("ModoConduccionNivelAutonomo");
 		this.setListenToKnowledgePropertyChanges("TipoCarretera");
-		this.setListenToKnowledgePropertyChanges("EstadoCarretera");
 
 		kp_modo_conduccion = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccion");
 		kp_modo_conduccion_nivel_autonomo = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccionNivelAutonomo");
 		kp_tipo_carretera = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("TipoCarretera");
-		kp_estado_carretera = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("EstadoCarretera");
 	}
 
 	@Override

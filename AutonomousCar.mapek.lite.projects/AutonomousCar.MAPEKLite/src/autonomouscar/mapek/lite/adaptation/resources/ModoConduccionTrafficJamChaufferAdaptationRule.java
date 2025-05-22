@@ -29,17 +29,16 @@ public class ModoConduccionTrafficJamChaufferAdaptationRule extends AdaptationRu
 	IKnowledgeProperty kp_modo_conduccion = null;
 	IKnowledgeProperty kp_modo_conduccion_nivel_autonomo = null;
 	IKnowledgeProperty kp_tipo_carretera = null;
-	IKnowledgeProperty kp_estado_carretera = null;
 	
 	public ModoConduccionTrafficJamChaufferAdaptationRule(BundleContext context) {
 		super(context, ID);
 		this.setListenToKnowledgePropertyChanges("TipoCarretera");
-		this.setListenToKnowledgePropertyChanges("EstadoCarretera");
+		this.setListenToKnowledgePropertyChanges("ModoConduccionNivelAutonomo");
+		this.setListenToKnowledgePropertyChanges("ModoConduccion");
 
-		kp_modo_conduccion = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccion");
-		kp_modo_conduccion_nivel_autonomo = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccionNivelAutonomo");
 		kp_tipo_carretera = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("TipoCarretera");
-		kp_estado_carretera = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("EstadoCarretera");
+		kp_modo_conduccion_nivel_autonomo = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccionNivelAutonomo");
+		kp_modo_conduccion = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccion");
 	}
 
 	@Override
@@ -64,14 +63,6 @@ public class ModoConduccionTrafficJamChaufferAdaptationRule extends AdaptationRu
 			modoConduccion = (String) kp_modo_conduccion.getValue();
 		} else {
 			logger.trace("FranjaDia NULL! Not executing the rule ...");
-			throw new RuleException("FranjaDia null value!", "Not executing the rule ...");		
-		}
-		
-		if ( kp_estado_carretera.getValue() != null ) {
-			
-			modoEstadoCarretera = (String) kp_estado_carretera.getValue();
-		} else {
-			logger.trace("asdfasdf NULL! Not executing the rule ...");
 			throw new RuleException("FranjaDia null value!", "Not executing the rule ...");		
 		}
 		

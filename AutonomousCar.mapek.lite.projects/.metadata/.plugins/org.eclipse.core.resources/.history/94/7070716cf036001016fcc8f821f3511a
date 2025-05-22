@@ -29,7 +29,6 @@ public class ModoConduccionTrafficJamChaufferAdaptationRule extends AdaptationRu
 	IKnowledgeProperty kp_modo_conduccion = null;
 	IKnowledgeProperty kp_modo_conduccion_nivel_autonomo = null;
 	IKnowledgeProperty kp_tipo_carretera = null;
-	IKnowledgeProperty kp_estado_carretera = null;
 	
 	public ModoConduccionTrafficJamChaufferAdaptationRule(BundleContext context) {
 		super(context, ID);
@@ -39,7 +38,6 @@ public class ModoConduccionTrafficJamChaufferAdaptationRule extends AdaptationRu
 		kp_modo_conduccion = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccion");
 		kp_modo_conduccion_nivel_autonomo = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("ModoConduccionNivelAutonomo");
 		kp_tipo_carretera = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("TipoCarretera");
-		kp_estado_carretera = BasicMAPEKLiteLoopHelper.getKnowledgeProperty("EstadoCarretera");
 	}
 
 	@Override
@@ -84,7 +82,7 @@ public class ModoConduccionTrafficJamChaufferAdaptationRule extends AdaptationRu
 		}
 
 		if (modoConduccion.equals("3") && 	
-				(modoTipoCarretera.equals("HIGHWAY") || modoTipoCarretera.equals("STD_ROAD")) && 
+				modoTipoCarretera.equals("HIGHWAY") && 
 				(modoEstadoCarretera.equals("JAM") || modoEstadoCarretera.equals("COLLAPSED"))) {
 			return this.configuracionSistemaActivarControlTrafficJamChauffer();
 		} else if (modoTipoCarretera.equals("CITY") || modoEstadoCarretera.equals("FLUID")) {
@@ -129,7 +127,7 @@ public class ModoConduccionTrafficJamChaufferAdaptationRule extends AdaptationRu
 				"device.HumanSensors", "1.0.0", HumanSensorsARC.PROVIDED_SENSOR);
 		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
 				"driving.L3.TrafficJamChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_ROADSENSOR,
-				"device.RoadSensor", "1.0.0", RoadSensorARC.PROVIDED_SENSOR);
+				"device.RoadSensors", "1.0.0", RoadSensorARC.PROVIDED_SENSOR);
 		SystemConfigurationHelper.bindingToAdd(theNextSystemConfiguration, 
 				"driving.L3.TrafficJamChauffer", "1.0.0", L3_DrivingServiceARC.REQUIRED_STEERING,
 				"device.Steering", "1.0.0", SteeringARC.PROVIDED_DEVICE);
